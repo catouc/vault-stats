@@ -8,7 +8,9 @@ use clap::Parser;
 #[derive(Parser, Debug)]
 struct Args {
    #[arg(short, long, default_value_t = 1000)]
-   threshold: u32
+   threshold: u32,
+   #[arg(short, long, default_value = "/var/log/vault/audit.log")]
+   path: String,
 }
 
 #[derive(Deserialize, Debug)]
@@ -31,7 +33,7 @@ struct Request {
 fn main() {
     let args = Args::parse();
     let mut scores: HashMap<String, u32> = HashMap::new();
-    let file = File::open("/tmp/vault-audit.log").expect("couldn't open file");
+    let file = File::open(args.path).expect("couldn't open file");
 
     let mut total: u64 = 0;
     for line in BufReader::new(file).lines() {
